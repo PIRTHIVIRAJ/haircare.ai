@@ -1,0 +1,12 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=$HOME/public_html/
+    - /bin/cp -R * $DEPLOYPATH
+    - /bin/cp .env.example $DEPLOYPATH.env
+    - cd $DEPLOYPATH
+    - composer install --no-dev --optimize-autoloader
+    - php artisan migrate --force
+    - php artisan config:clear
+    - php artisan view:clear
+    - php artisan cache:clear
