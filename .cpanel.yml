@@ -5,8 +5,10 @@ deployment:
     - /bin/cp -R * $DEPLOYPATH
     - cd $DEPLOYPATH
     - /bin/cp -n .env.example .env
-    - chmod -R 775 storage bootstrap/cache
+    - touch database/database.sqlite
+    - chmod -R 777 storage bootstrap/cache database
     - php artisan key:generate --force
+    - php artisan migrate --force
     - php artisan config:clear
     - php artisan view:clear
     - php artisan optimize
