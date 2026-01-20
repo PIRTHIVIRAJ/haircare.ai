@@ -69,6 +69,54 @@ Route::get('/science/genetics', function () {
 
 
 // --- About ---
-Route::get('/about', function () {
     return view('pages.about');
+});
+
+// --- FIX ROUTE (One-time use) ---
+Route::get('/install-fix', function () {
+    $dbPath = database_path('database.sqlite');
+    
+    // 1. Create SQLite File
+    if (!file_exists($dbPath)) {
+        touch($dbPath);
+        chmod($dbPath, 0777); // Permissive for initial setup
+        $msg = "Created database.sqlite.<br>";
+    } else {
+        $msg = "Database file already exists.<br>";
+    }
+
+    // 2. Fix Database Directory Permissions
+    if (is_dir(database_path())) {
+        chmod(database_path(), 0775);
+    }
+
+    // 3. Fix Storage Permissions
+    $folders = [
+        storage_path(),
+        storage_path('app'),
+        storage_path('framework'),
+        storage_path('framework/views'),
+        storage_path('framework/cache'),
+        storage_path('framework/sessions'),
+        storage_path('logs'),
+        base_path('bootstrap/cache')
+    ];
+
+    foreach ($folders as $folder) {
+        if (!is_dir($folder)) {
+            mkdir($folder, 0775, true);
+        }
+        chmod($folder, 0775);
+    }
+    $msg .= "Fixed permissions.<br>";
+
+    // 4. Run Migrations
+    try {
+        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+        $msg .= "Migrations run successfully: " . \Illuminate\Support\Facades\Artisan::output() . "<br>";
+    } catch (\Exception $e) {
+        $msg .= "Migration Failed: " . $e->getMessage() . "<br>";
+    }
+
+    return $msg . "<strong>DONE. Go back to Home.</strong>";
 });
