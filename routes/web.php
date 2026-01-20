@@ -69,6 +69,7 @@ Route::get('/science/genetics', function () {
 
 
 // --- About ---
+Route::get('/about', function () {
     return view('pages.about');
 });
 
