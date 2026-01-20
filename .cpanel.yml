@@ -3,10 +3,10 @@ deployment:
   tasks:
     - export DEPLOYPATH=$HOME/public_html/
     - /bin/cp -R * $DEPLOYPATH
-    - /bin/cp .env.example $DEPLOYPATH.env
     - cd $DEPLOYPATH
-    - composer install --no-dev --optimize-autoloader
-    - php artisan migrate --force
+    - /bin/cp -n .env.example .env
+    - chmod -R 775 storage bootstrap/cache
+    - php artisan key:generate --force
     - php artisan config:clear
     - php artisan view:clear
-    - php artisan cache:clear
+    - php artisan optimize
