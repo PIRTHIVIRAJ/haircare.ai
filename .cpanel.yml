@@ -1,11 +1,11 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/USER/public_html/
+    - export DEPLOYPATH=$HOME/public_html/
     - /bin/cp -R * $DEPLOYPATH
     - /bin/cp .env.example $DEPLOYPATH.env
     - cd $DEPLOYPATH
-    - /usr/local/bin/composer install
+    - /usr/local/bin/composer install --no-dev --optimize-autoloader
     - /usr/local/bin/php artisan migrate --force
-    - /usr/local/bin/php artisan view:cache
     - /usr/local/bin/php artisan config:cache
+    - /usr/local/bin/php artisan view:cache
